@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import { config } from './config';
 import { BrowserView, MobileView } from 'react-device-detect';
+import SettingsPopup from './SettingsPopup'
+import gear from './gear.png'
 
 type BridgeState = {
   num1: number | null
@@ -16,7 +18,11 @@ type BridgeState = {
   correctAnswers: number,
   incorrectAnswers: number,
   score: number,
-  pointsForProblem: number | null
+  pointsForProblem: number | null,
+  showSettings: boolean,
+  numberDelay: number,
+  problemDelay: number,
+  timeForPoints: number[]
 }
 
 class App extends Component<{}, BridgeState> {
@@ -35,6 +41,7 @@ class App extends Component<{}, BridgeState> {
     this.tenProblems = this.tenProblems.bind(this)
     this.getScore = this.getScore.bind(this)
     this.clearScore = this.clearScore.bind(this)
+    this.openSettings = this.openSettings.bind(this)
 
     this.startTime = null
     this.problem = null
@@ -52,8 +59,27 @@ class App extends Component<{}, BridgeState> {
       correctAnswers: 0,
       incorrectAnswers: 0,
       score: 0,
-      pointsForProblem: null
+      pointsForProblem: null,
+      showSettings: false,
+      numberDelay: config.numberDelay,
+      problemDelay: config.problemDelay,
+      timeForPoints: config.timeForPoints
     }
+  }
+
+  openSettings() {
+    this.setState({showSettings: true}, () => document.removeEventListener("keydown", this.keydown, false))
+  }
+
+  closeSettings() {
+    this.setState({showSettings: false}, () => document.addEventListener("keydown", this.keydown, false))
+  }
+
+  updateConfig(numberDelay: number, problemDelay: number) {
+    this.setState({
+      numberDelay: numberDelay, 
+      problemDelay: problemDelay,
+    })
   }
 
   // When key is pressed
@@ -96,8 +122,10 @@ class App extends Component<{}, BridgeState> {
           <div style={{ position: "absolute", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "100%", width: "100%" }}>
             <div style={{ alignContent: "center", width: "60%", height: "40%", display: "flex", flexDirection: "column", backgroundColor: "darkgray", border: "2px solid black" }}>
               {/* Header */}
-              <div style={{ justifyContent: "center", width: "100%", height: "20%", display: "flex", flexDirection: "column", backgroundColor: "gray" }}>
-                Basta Bridge | Counting Game :)
+              <div style={{justifyContent: "space-between", alignItems: "center", width: "100%", height: "20%", display: "flex", flexDirection: "row", backgroundColor: "gray" }}>
+                <p>Basta Bridge | Counting Game :)</p>
+                {/* Settings button */}
+                <img style={{padding: "3%", height: "45%"}} alt="settings button" src={gear} onClick={() => this.openSettings()} />
               </div>
 
               <hr style={{ width: "100%", margin: "0px", border: "1px solid black" }} />
@@ -166,6 +194,16 @@ class App extends Component<{}, BridgeState> {
                 </div>
               </div>
             </div>
+            {/* Show settings popup */}
+            {this.state.showSettings ?
+            <SettingsPopup
+              closeSettings={this.closeSettings.bind(this)}
+              updateConfig={this.updateConfig.bind(this)}
+              numberDelay={this.state.numberDelay}
+              problemDelay={this.state.problemDelay}
+              timeForPoints={this.state.timeForPoints}
+            />
+            : null }
           </div>
         </BrowserView>
         {/* Displays on mobile */}
@@ -222,13 +260,12 @@ class App extends Component<{}, BridgeState> {
     this.problem = this.getProblem();
 
     // Display problem with delay
-    await this.delay(config.numberDelay)
     this.setState({ num1: this.problem[0] })
-    await this.delay(config.numberDelay)
+    await this.delay(this.state.numberDelay)
     this.setState({ num2: this.problem[1] })
-    await this.delay(config.numberDelay)
+    await this.delay(this.state.numberDelay)
     this.setState({ num3: this.problem[2] })
-    await this.delay(config.numberDelay)
+    await this.delay(this.state.numberDelay)
     this.setState({ answer: "?", answersLocked: false }, () => { this.startTime = new Date().getTime(); })
   }
 
@@ -269,7 +306,7 @@ class App extends Component<{}, BridgeState> {
 
     // If there are still problems to display
     if (this.state.problemsRemaining > 0) {
-      await this.delay(config.problemDelay)
+      await this.delay(this.state.problemDelay)
       // Decrement counter and start next problem
       this.setState({ problemsRemaining: this.state.problemsRemaining - 1 }, () => { this.onStart() })
     }
@@ -277,9 +314,9 @@ class App extends Component<{}, BridgeState> {
 
   // Get score for problem based on time to answer
   getScore(elapsedTime: number) {
-    for (let i = 0; i < config.timeForPoints.length; i++) {
+    for (let i = 0; i < this.state.timeForPoints.length; i++) {
       // Check if time to answer less than next reward level
-      if (elapsedTime < config.timeForPoints[i]) {
+      if (elapsedTime < this.state.timeForPoints[i]) {
         // Return between 0 and 10 points
         return 10 - i
       }
