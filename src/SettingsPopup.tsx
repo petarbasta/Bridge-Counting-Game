@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import x from './x.png'
 
 type SettingsProps = {
@@ -17,17 +17,38 @@ type SettingsState = {
 
 class SettingsPopup extends React.Component<SettingsProps, SettingsState> {
 
+    popupRef: RefObject<any>
+
     constructor(props: any) {
         super(props)
         this.onNumberDelayChange = this.onNumberDelayChange.bind(this)
         this.onProblemDelayChange = this.onProblemDelayChange.bind(this)
         this.onTimeForPointsChange = this.onTimeForPointsChange.bind(this)
+        this.handleClick = this.handleClick.bind(this)
+        
+        this.popupRef = React.createRef()
 
         this.state = {
             numberDelay: this.props.numberDelay,
             problemDelay: this.props.problemDelay,
             timeForPoints: this.props.timeForPoints
         }
+    }
+
+    componentDidMount() {
+        document.addEventListener("mousedown", this.handleClick, false);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener("mousedown", this.handleClick, false);
+    }
+
+    handleClick(e: any) {
+        // If click outside popup
+        if (!this.popupRef.current.contains(e.target)) {
+            // Close popup
+            this.props.closeSettings()
+          }
     }
 
     // Update numberDelay
@@ -76,7 +97,7 @@ class SettingsPopup extends React.Component<SettingsProps, SettingsState> {
             // Translucent background
             <div style={{ position: "fixed", display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "100%", backgroundColor: "rgba(0,0,0, 0.5)" }}>
                 {/* // Popup box */}
-                <div style={{ position: "fixed", display: "flex", flexDirection: "column", width: "30%", height: "35%", backgroundColor: "beige", border: "2px solid black" }}>
+                <div ref={this.popupRef} style={{ position: "fixed", display: "flex", flexDirection: "column", width: "30%", height: "35%", backgroundColor: "beige", border: "2px solid black" }}>
                     {/* Header */}
                     <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "20%" }}>
                         <h1>Settings</h1>
