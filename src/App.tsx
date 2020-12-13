@@ -78,8 +78,6 @@ class App extends Component<{}, BridgeState> {
   }
 
   render() {
-    const numberBoxStyle = { margin: "1.5%", display: "flex", flexDirection: "row" as "row", justifyContent: "center", alignItems: "center", width: "20%", height: "60%", border: "2px solid black" }
-    const buttonStyle = { fontFamily: "Courier", backgroundColor: "#FF7F50", border: "1px solid gray", margin: "2%", marginLeft: "2%", width: "40%", height: "80%" }
     const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
     const answerButtons = numbers.map((key) => {
       return (
@@ -110,16 +108,16 @@ class App extends Component<{}, BridgeState> {
 
                   {/* Problem display */}
                   <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "40%", width: "100%" }} >
-                    <div style={numberBoxStyle}>
+                    <div className="number-box">
                       <h2>{this.state.num1}</h2>
                     </div>
-                    <div style={numberBoxStyle}>
+                    <div className="number-box">
                       <h2>{this.state.num2}</h2>
                     </div>
-                    <div style={numberBoxStyle}>
+                    <div className="number-box">
                       <h2>{this.state.num3}</h2>
                     </div>
-                    <div style={numberBoxStyle}>
+                    <div className="number-box">
                       <h2>{this.state.answer}</h2>
                     </div>
                   </div>
@@ -136,13 +134,13 @@ class App extends Component<{}, BridgeState> {
 
                   {/* Control buttons */}
                   <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "20%", width: "100%" }}>
-                    <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="btn" style={buttonStyle} onClick={() => this.onStart()}>
+                    <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="btn button" onClick={() => this.onStart()}>
                       New problem
                     </button>
-                    <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="btn" style={buttonStyle} onClick={() => this.tenProblems()}>
+                    <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="btn button" onClick={() => this.tenProblems()}>
                       10 Problems
                     </button>
-                    <button disabled={this.state.clearScoreLocked || this.state.problemsRemaining > 0} className="btn" style={buttonStyle} onClick={() => this.clearScore()}>
+                    <button disabled={this.state.clearScoreLocked || this.state.problemsRemaining > 0} className="btn button" onClick={() => this.clearScore()}>
                       Clear Score
                     </button>
                   </div>
