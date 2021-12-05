@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Game can be played at https://bridge-8b392.firebaseapp.com/
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
