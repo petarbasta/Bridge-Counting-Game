@@ -3,7 +3,7 @@ import './App.css';
 import { config } from './config';
 import { BrowserView, MobileView } from 'react-device-detect';
 import SettingsPopup from './SettingsPopup'
-import gear from './gear.png'
+import gear from './images/gear.png'
 
 type BridgeState = {
   num1: number | null

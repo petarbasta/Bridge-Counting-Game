@@ -1,5 +1,5 @@
 import React, { RefObject } from 'react';
-import x from './x.png'
+import x from './images/x.png'
 
 type SettingsProps = {
     closeSettings: Function
