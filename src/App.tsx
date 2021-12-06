@@ -10,7 +10,6 @@ type BridgeState = {
   num2: number | null
   num3: number | null
   answer: number | null | string
-  message: string
   answersLocked: boolean
   newProblemsLocked: boolean,
   clearScoreLocked: boolean,
@@ -51,7 +50,6 @@ class App extends Component<{}, BridgeState> {
       num2: null,
       num3: null,
       answer: null,
-      message: "",
       answersLocked: true,
       newProblemsLocked: false,
       clearScoreLocked: true,
@@ -77,7 +75,6 @@ class App extends Component<{}, BridgeState> {
       num2: null,
       num3: null,
       answer: null,
-      message: "",
       newProblemsLocked: true,
       pointsForProblem: null
     })
@@ -120,7 +117,6 @@ class App extends Component<{}, BridgeState> {
       // Award points
       let pointsForProblem = this.getScore(elapsedTime)
       this.setState({
-        message: "Correct!",
         score: this.state.score + pointsForProblem,
         pointsForProblem: pointsForProblem,
         correctAnswers: this.state.correctAnswers + 1,
@@ -131,7 +127,7 @@ class App extends Component<{}, BridgeState> {
     else {
       // No points update
       this.setState({
-        message: "Incorrect. Answer is " + this.problem![3] + ".",
+        pointsForProblem: 0,
         incorrectAnswers: this.state.incorrectAnswers + 1,
         clearScoreLocked: false
       })
@@ -176,7 +172,7 @@ class App extends Component<{}, BridgeState> {
       clearScoreLocked: true,
     })
   }
-  
+
   openSettings() {
     this.setState({ showSettings: true }, () => document.removeEventListener("keydown", this.keydown, false))
   }
@@ -217,93 +213,88 @@ class App extends Component<{}, BridgeState> {
     const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
     const answerButtons = numbers.map((key) => {
       return (
-        <button disabled={this.state.answersLocked} style={{ margin: "0.5%", height: "90%", width: "9%" }} key={key} onClick={() => this.submit(key)}>
+        <button disabled={this.state.answersLocked} style={{ margin: "0.5%", height: "90%", width: "9%", border: "1px solid black", borderRadius: "5px" }} className="answer_button" key={key} onClick={() => this.submit(key)}>
           {key}
         </button>
 
       )
     })
-    let messageColor = this.state.message === "Correct!" ? "green" : "red"
-    let pointsForProblem = this.state.pointsForProblem === null ? "" : this.state.pointsForProblem + " points"
+    let messageColor = "#a18fa1"
+
+    if (this.state.pointsForProblem !== null) {
+      messageColor = this.state.pointsForProblem === 0 ? "#990000" : "green"
+    }
+
+    let message = this.state.pointsForProblem === null ? <h2></h2> : <h2 style={{ color: messageColor, fontFamily: "didot", paddingTop: "1%", fontSize: "xxx-large" }}>{this.state.pointsForProblem} points</h2>
+    
     return (
       <>
         {/* Displays on PC  */}
         <BrowserView>
-          <div style={{ position: "absolute", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "100%", width: "100%" }}>
-            <div style={{ alignContent: "center", width: "60%", height: "40%", display: "flex", flexDirection: "column", backgroundColor: "darkgray", border: "2px solid black" }}>
-              {/* Header */}
-              <div style={{ justifyContent: "space-between", alignItems: "center", width: "100%", height: "20%", display: "flex", flexDirection: "row", backgroundColor: "gray" }}>
-                <p>Basta Bridge | Counting Game :)</p>
-                {/* Settings button */}
-                <img style={{ padding: "3%", height: "45%" }} alt="settings button" src={gear} onClick={() => this.openSettings()} />
+          <div style={{ position: "absolute", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "black" }}>
+            {/* Header */}
+            <div style={{ justifyContent: "flex-end", alignItems: "center", width: "100%", height: "12%", display: "flex", flexDirection: "row" }}>
+              <div style={{width: "80%", display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "2%"}}>
+                <h1 style={{ fontFamily: "didot", color: "#ead8f3", fontSize: "xxx-large", width: "40%", textAlign: "right"}}>Basta Bridge</h1>
+                <h1 style={{ fontFamily: "didot", color: "#ead8f3", fontSize: "xxx-large", width: "2%", textAlign: "center"}}> | </h1>
+                <h1 style={{ fontFamily: "didot", color: "#ead8f3", fontSize: "xxx-large", width: "40%", textAlign: "left"}}>Counting Game</h1>
+              </div>
+              {/* Settings button */}
+              <div style={{width: "10%", display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
+                <img style={{ width: "20%", marginRight: "20%" }} alt="settings button" src={gear} onClick={() => this.openSettings()} />
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "88%", width: "100%" }}>
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "80%", width: "100%" }}>
+
+                {/* Problem display */}
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "40%", width: "80%" }} >
+                  <div className="number-box" style={{ border: "4px solid " + messageColor }}>
+                    <p style={{ fontSize: "xxx-large", color: messageColor }}>{this.state.num1}</p>
+                  </div>
+                  <div className="number-box" style={{ border: "4px solid " + messageColor }}>
+                    <p style={{ fontSize: "xxx-large", color: messageColor }}>{this.state.num2}</p>
+                  </div>
+                  <div className="number-box" style={{ border: "4px solid " + messageColor }}>
+                    <p style={{ fontSize: "xxx-large", color: messageColor }}>{this.state.num3}</p>
+                  </div>
+                  <div className="number-box" style={{ border: "4px solid " + messageColor }}>
+                    <p style={{ fontSize: "xxx-large", color: messageColor }}>{this.state.answer}</p>
+                  </div>
+                </div>
+
+                {/* Answer buttons  */}
+                <div style={{ margin: "0%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "15%", width: "80%" }}>
+                  {answerButtons}
+                </div>
+
+                {/* Message on answer */}
+                <div style={{ margin: "0%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "25%", width: "100%" }}>
+                  {message}
+                </div>
+
+                {/* Control buttons */}
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: "20%", width: "40%" }}>
+                  <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="bn30" onClick={() => this.onStart()} >
+                    New Problem
+                    </button>
+                  <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="bn30" onClick={() => this.tenProblems()}>
+                    10 Problems
+                    </button>
+                  <button disabled={this.state.clearScoreLocked || this.state.problemsRemaining > 0} className="bn30" onClick={() => this.clearScore()}>
+                    Clear Stats
+                    </button>
+                </div>
               </div>
 
-              <hr style={{ width: "100%", margin: "0px", border: "1px solid black" }} />
-
-              <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "80%", width: "100%" }}>
-
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", width: "60%" }}>
-
-                  {/* Problem display */}
-                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "40%", width: "100%" }} >
-                    <div className="number-box">
-                      <h2>{this.state.num1}</h2>
-                    </div>
-                    <div className="number-box">
-                      <h2>{this.state.num2}</h2>
-                    </div>
-                    <div className="number-box">
-                      <h2>{this.state.num3}</h2>
-                    </div>
-                    <div className="number-box">
-                      <h2>{this.state.answer}</h2>
-                    </div>
-                  </div>
-
-                  {/* Answer buttons  */}
-                  <div style={{ margin: "0%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "15%", width: "100%" }}>
-                    {answerButtons}
-                  </div>
-
-                  {/* Message on answer */}
-                  <div style={{ margin: "0%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "25%", width: "100%" }}>
-                    <h2 style={{ color: messageColor }}>{this.state.message + " " + pointsForProblem}</h2>
-                  </div>
-
-                  {/* Control buttons */}
-                  <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "20%", width: "100%" }}>
-                    <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="btn button" onClick={() => this.onStart()}>
-                      New problem
-                    </button>
-                    <button disabled={this.state.newProblemsLocked || this.state.problemsRemaining > 0} className="btn button" onClick={() => this.tenProblems()}>
-                      10 Problems
-                    </button>
-                    <button disabled={this.state.clearScoreLocked || this.state.problemsRemaining > 0} className="btn button" onClick={() => this.clearScore()}>
-                      Clear Score
-                    </button>
-                  </div>
-                </div>
-
-                {/* Stats display */}
-                <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "100%", width: "40%" }} >
-                  {/* Left side */}
-                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-end", height: "100%", width: "50%" }} >
-                    <p style={{ margin: "4%", padding: "0%" }}>Correct answers:</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>Incorrect answers:</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>Correct percentage:</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>Total points:</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>Average points:</p>
-                  </div>
-
-                  {/* Right side */}
-                  <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", height: "100%", width: "50%" }} >
-                    <p style={{ margin: "4%", padding: "0%" }}>{this.state.correctAnswers}</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>{this.state.incorrectAnswers}</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>{this.state.correctAnswers + this.state.incorrectAnswers === 0 ? "N/A" : (100 * this.state.correctAnswers / (this.state.correctAnswers + this.state.incorrectAnswers)).toFixed(2) + "%"}</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>{this.state.score}</p>
-                    <p style={{ margin: "4%", padding: "0%" }}>{this.state.correctAnswers + this.state.incorrectAnswers === 0 ? "N/A" : (this.state.score / (this.state.correctAnswers + this.state.incorrectAnswers)).toFixed(2)}</p>
-                  </div>
-                </div>
+              {/* Stats display */}
+              <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", height: "20%", width: "100%"}} >
+                <p className="stats">Correct answers: {this.state.correctAnswers}</p>
+                <p className="stats">Incorrect answers: {this.state.incorrectAnswers}</p>
+                <p className="stats">Correct percentage: {this.state.correctAnswers + this.state.incorrectAnswers === 0 ? "N/A" : (100 * this.state.correctAnswers / (this.state.correctAnswers + this.state.incorrectAnswers)).toFixed(2) + "%"}</p>
+                <p className="stats">Total points: {this.state.score}</p>
+                <p className="stats"> Average points: {this.state.correctAnswers + this.state.incorrectAnswers === 0 ? "N/A" : (this.state.score / (this.state.correctAnswers + this.state.incorrectAnswers)).toFixed(2)}</p>
               </div>
             </div>
             {/* Show settings popup */}
