@@ -1,9 +1,9 @@
-import React, { RefObject } from 'react';
-import { config } from './config';
+import React from 'react';
+import { GameConfig } from './GameConfig';
 import SettingsPopup from './SettingsPopup'
 import gear from '../../images/gear.png'
 
-type BridgeState = {
+type GameState = {
   num1: number | null
   num2: number | null
   num3: number | null
@@ -22,7 +22,7 @@ type BridgeState = {
   timeForPoints: number[]
 }
 
-class Game extends React.Component<{}, BridgeState> {
+class Game extends React.Component<{}, GameState> {
 
     startTime: number | null
     problem: number[] | null
@@ -57,9 +57,9 @@ class Game extends React.Component<{}, BridgeState> {
         score: 0,
         pointsForProblem: null,
         showSettings: false,
-        numberDelay: config.numberDelay,
-        problemDelay: config.problemDelay,
-        timeForPoints: config.timeForPoints
+        numberDelay: GameConfig.numberDelay,
+        problemDelay: GameConfig.problemDelay,
+        timeForPoints: GameConfig.timeForPoints
         }
     }
 
@@ -223,7 +223,7 @@ class Game extends React.Component<{}, BridgeState> {
         messageColor = this.state.pointsForProblem === 0 ? "#990000" : "green"
         }
 
-        let message = this.state.pointsForProblem === null ? <h2></h2> : <h2 style={{ color: messageColor, fontFamily: "didot", paddingTop: "1%", fontSize: "xxx-large" }}>{this.state.pointsForProblem} points</h2>
+        let message = this.state.pointsForProblem === null ? null : <h2 style={{ color: messageColor, fontFamily: "didot", paddingTop: "1%", fontSize: "xxx-large" }}>{this.state.pointsForProblem} points</h2>
     
         return (
             <div style={{ position: "absolute", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "black" }}>
