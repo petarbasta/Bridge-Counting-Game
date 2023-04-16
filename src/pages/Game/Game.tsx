@@ -2,6 +2,9 @@ import React from 'react';
 import { GameConfig } from './GameConfig';
 import SettingsPopup from './SettingsPopup'
 import gear from '../../images/gear.png'
+import { initializeApp } from 'firebase/app'
+import { getAnalytics, logEvent } from "firebase/analytics";
+import firebaseConfig from '../../firebaseConfig.json'
 
 type GameState = {
   num1: number | null
@@ -21,6 +24,9 @@ type GameState = {
   problemDelay: number,
   timeForPoints: number[]
 }
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 class Game extends React.Component<{}, GameState> {
 
@@ -153,6 +159,7 @@ class Game extends React.Component<{}, GameState> {
 
   // Initiates 10 new problems
   async tenProblems() {
+    logEvent(analytics, 'new_game_initiated')
     this.setState({ problemsRemaining: 9 }, () => { this.onStart() })
   }
 
