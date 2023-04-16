@@ -5,6 +5,7 @@ import gear from '../../images/gear.png'
 import { initializeApp } from 'firebase/app'
 import { getAnalytics, logEvent } from "firebase/analytics";
 import firebaseConfig from '../../firebaseConfig.json'
+import './Game.css'
 
 type GameState = {
   num1: number | null
@@ -233,7 +234,7 @@ class Game extends React.Component<{}, GameState> {
         let message = this.state.pointsForProblem === null ? null : <h2 style={{ color: messageColor, fontFamily: "didot", paddingTop: "1%", fontSize: "xxx-large" }}>{this.state.pointsForProblem} points</h2>
     
         return (
-            <div style={{ position: "absolute", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "black" }}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", width: "100%", backgroundColor: "black" }}>
             {/* Header */}
             <div style={{ justifyContent: "flex-end", alignItems: "center", width: "100%", height: "12%", display: "flex", flexDirection: "row" }}>
               <div style={{width: "80%", display: "flex", flexDirection: "row", justifyContent: "center", paddingTop: "2%"}}>
