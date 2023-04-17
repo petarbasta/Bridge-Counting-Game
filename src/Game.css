@@ -1,5 +1,4 @@
 .number-box {
-    margin: 1.5%;
     display: flex; 
     flex-direction: row;
     justify-content: center;
@@ -17,7 +16,7 @@
     padding: 0.7em 2em;
     border-radius: 20px;
     color: #ead8f3;;
-    background-image: linear-gradient(45deg, 'red', #a366ff);
+    background-image: linear-gradient(45deg, #954e97, #a366ff);
     font-family: 'didot';
     font-size: larger;
   }
