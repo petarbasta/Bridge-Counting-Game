@@ -11,7 +11,8 @@ let GameConfig = {
     "gracePeriod": 50,
     "decayPeriod": 3000,
     "minScore": 10000,
-    "maxScore": 100000
+    "maxScore": 100000,
+    "roundsPerGame": 1
 }
 
 export {GameConfig}
